@@ -1,5 +1,5 @@
 """
-Verify the five chlorin-family reference structures (Phase 1).
+verify the five chlorin-family reference structures (Phase 1).
 
 Parses each compound's SMILES/InChI with RDKit and checks the computed
 molecular formula and formal charge against literature values, BEFORE
