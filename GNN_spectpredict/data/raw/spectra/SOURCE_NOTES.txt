@@ -1,0 +1,32 @@
+Source: Natural_Chlorophylls.zip, PhotochemCAD chlorophyll spectral database
+(Taniguchi & Lindsey 2021, Photochem. Photobiol. 97, 136-165)
+
+All four files below: same solvent (diethyl ether, Et2O), same source
+paper (Kobayashi 2013), same measurement campaign - chosen specifically
+to eliminate inter-laboratory variability as well as solvent as a
+confound across the four-compound reference set.
+
+  chl_a_et2o_kobayashi2013.abs.txt   <- CHL007 in original archive
+  chl_b_et2o_kobayashi2013.abs.txt   <- CHL015
+  chl_d_et2o_kobayashi2013.abs.txt   <- CHL023
+  chl_f_et2o_kobayashi2013.abs.txt   <- CHL031 (archive names this "Ch f",
+                                          not "Chl f" - a naming quirk in
+                                          the source database, worth
+                                          remembering if scripting against
+                                          the original archive later)
+
+Format: tab-separated, Windows line endings (\r\n).
+  Column 1: Wavelength (nm)
+  Column 2: Absorbance
+Range: ~350-710 nm (720-740 nm for d/f, which red-shift further).
+Grid: IRREGULAR spacing (~2.2-4 nm steps) - do not assume uniform
+  sampling when writing the Phase 2 deconvolution fit.
+
+Sanity check passed: Q_y band positions follow the expected physical
+progression - Chl b blue-shifted (~642 nm) relative to Chl a (~661 nm),
+Chl d red-shifted (~682-690 nm), Chl f most red-shifted (~696+ nm) -
+consistent with known chlorophyll photophysics, not just plausible
+formatting.
+
+Pheophytin a intentionally excluded from this reference set - see
+project README, "Reference set decision" section.
