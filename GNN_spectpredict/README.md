@@ -1,75 +1,55 @@
 # Chlorin Structure Elucidation from UV/Vis Spectra
 
-Physics-informed pipeline for predicting structural modifications to the
-chlorin macrocycle (substituent identity and position) from UV/Vis
-absorption spectra, built around an analytic inversion of Gouterman's
-four-orbital model rather than a black-box structure-to-spectrum map.
+Attempt at a physics-informed pipeline for predicting structural modifications to
+chlorin macrocycles from its UV/Vis absorption spectra (assuming user-provided UV/Vis spectra
+of known chlorin compound - for e.g., chl a - measured with same instrument) built around analytically 
+inverting Gouterman's four-orbital model.
 
-Core idea: invert a measured spectrum's Q_x, Q_y, B_x, B_y band positions
-and intensities into the four Gouterman frontier orbital energies via
-closed-form 2x2 configuration-interaction algebra, then use a
-sparse-recovery step (orbital-shift vector -> substituent identity and
-position, via a |c(r)|^2 coefficient dictionary) to infer candidate
-structures. A trained GNN can later serve as a fast surrogate for the
-orbital-energy step, pretrained on cheap semiempirical data and fine-tuned
-on real spectra via this same inversion pipeline.
+The idea is to invert a measured spectrum's Q_x, Q_y, B_x, B_y band positions and intensities into the four frontier orbital energies via
+closed-form 2x2 configuration-interaction algebra and then (by using the orbital-shift vector to obtain substituent identity and
+position, via a |c(r)|^2 coefficient dictionary) inferring possible candidate structures. (Ideally) a trained GNN can later replace
+the orbital-energy step, by pretraining on semiempirical data and fine-tuning on real spectra (same inversion pipeline).
 
 ## Reference set
 
 Chlorophyll a, b, d, f. All four in the SAME solvent (diethyl ether),
-same source paper (Kobayashi 2013), same measurement campaign - chosen
-specifically to eliminate both solvent and inter-laboratory variability
-as confounds. Source: Taniguchi & Lindsey 2021, Photochem. Photobiol. 97,
+same source paper (Kobayashi 2013), same measurement campaign.
+Source: Taniguchi & Lindsey 2021, Photochem. Photobiol. 97,
 136-165 (php.13319), PhotochemCAD database, "Natural_Chlorophylls.zip".
 
-Pheophytin a was considered and DROPPED from the active set: the only
-readily available digitized spectrum was in acetone, not diethyl ether,
-which would confound the demetalation signal with an uncontrolled solvent
-shift. Its structure remains verified (see
-data/raw/structures/reference_structures.csv) for later use if a
-matched-solvent measurement is found.
-
-Scope: the project targets chemical modifications to the chlorin
-macrocycle ring (substituent identity/position) - NOT metallation state,
-which was only ever a secondary/scaffold-level consideration.
+Disclaimer: Initially considered Pheophytin a but then dropped it because its only
+readily available digitized spectrum was in acetone not diethyl ether (the solvent-shift would 
+have added a confounding factor on top of the demetallation). However, if anyone has a spectrum of phe a
+in diethyl ether and would be happy to share it please do email me!
 
 ## Structure verification (Phase 1)
 
-All five reference structures (a, b, d, f, pheophytin a) were verified
-with RDKit: parsed SMILES/InChI, computed molecular formula and formal
-charge, checked against literature values. This caught two real errors
-before they could propagate silently downstream:
-- Chlorophyll f: the Wikidata-mirrored InChI (via PubChem CID 152743444)
-  gives a +1 formal charge, not neutral - a real RDKit mobile-H mismatch.
-  Fixed by using ChEBI's own CHEBI:61290 entry (dative-bond SMILES) instead.
-- Pheophytin a: ChEBI's plain SMILES field is missing both inner NH
-  protons (2H short). Fixed by using ChEBI's InChI instead, which carries
-  the correct mobile-H layer.
+Ref structures (a, b, d, f, phe a) verified with RDKit: parsed SMILES/InChI, computed molecular formula and formal
+charge, checked against literature values. 
+
+This caught two errors:
+- Chl f: the Wikidata-mirrored InChI (via PubChem CID 152743444)
+  gives a +1 formal charge, not neutral.
+  Fixed using ChEBI's own CHEBI:61290 entry (dative-bond SMILES) instead.
+- Phe a: ChEBI's plain SMILES field is missing both inner NH
+  protons (2H short). Fixed using ChEBI's InChI instead.
 
 See `scripts/phase1_reference_data/verify_reference_structures.py`.
 
 ## Phase 2: spectral deconvolution
 
 ### Q_y - solid for all four compounds
-Two-mode Franck-Condon (Huang-Rhys) vibronic fit, validated over the
-single-mode version by BIC in every case (delta-BIC -62 to -89 across
-a/b/d/f - a general feature of the series, not a Chl a quirk). The
-primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1) -
-a real, reproducible, shared macrocycle mode.
+Two-mode Franck-Condon (Huang-Rhys) vibronic fit, validated over the single-mode version by BIC in every case (delta-BIC -62 to -89 across
+a/b/d/f - a general feature of the series, not a Chl a quirk). The primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1).
 
-Chl b's Q_y fit is an outlier (761 cm^-1 primary mode vs the a/d/f
-cluster) - traced to Q_x and the Q_y vibronic satellite overlapping
-for this compound specifically (visible pre-fit in the raw band shape:
-no distinct third peak, unlike a/d/f's clean three-feature pattern).
+Chl b's Q_y fit is an outlier (761 cm^-1 primary mode vs the a/d/f cluster) - traced to Q_x and the Q_y vibronic satellite overlapping
+for this compound specifically (visible pre-fit in the raw band shape: no distinct third peak, unlike a/d/f's three-feature pattern).
 
 ### Q_x - validated for a/d/f, honestly unresolved for Chl b
-Key lesson: a bare Gaussian fails badly even for a visually "isolated"
-Q_x band (Chl a alone: R^2=0.33) because Q_x sits in a valley between
-the B-band's red tail and the Q_y-manifold's blue tail, which are not
-negligible there even when the raw plot looks flat. A baseline term
-(Gaussian + linear background) fixes this - but the window must also
-stay clear of the Q_y satellite's own tail (found via residual
-inspection, not assumption).
+Takeaway was that a bare Gaussian fails badly even for a visually "isolated" Q_x band (Chl a alone: R^2=0.33) because Q_x is in a minimum 
+between B-band's red tail and Q_y-manifold's blue tail: not negligible there even when the raw plot looks flat. A baseline term
+(Gaussian + linear background) fixes this - but the window also needs to stay clear of the Q_y satellite's own tail (found by residual
+inspection).
 
 Validated results (Gaussian + linear baseline):
 | Compound | Position | Width (cm^-1) | R^2 |
