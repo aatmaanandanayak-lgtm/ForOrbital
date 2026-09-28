@@ -12,8 +12,8 @@ the orbital-energy step, by pretraining on semiempirical data and fine-tuning on
 
 ## Reference set
 
-Chlorophyll a, b, d, f. All four in the SAME solvent (diethyl ether),
-same source paper (Kobayashi 2013), same measurement campaign.
+Chlorophyll a, b, d, f. All four in the same solvent (diethyl ether),
+same source paper (Kobayashi 2013), and same measurement campaign.
 Source: Taniguchi & Lindsey 2021, Photochem. Photobiol. 97,
 136-165 (php.13319), PhotochemCAD database, "Natural_Chlorophylls.zip".
 
@@ -39,15 +39,13 @@ See `scripts/phase1_reference_data/verify_reference_structures.py`.
 ## Phase 2: spectral deconvolution
 
 ### Q_y - solid for all four compounds
-Two-mode Franck-Condon (Huang-Rhys) vibronic fit, validated over the single-mode version by BIC in every case (delta-BIC -62 to -89 across
-a/b/d/f - a general feature of the series, not a Chl a quirk). The primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1).
+Two-mode Franck-Condon (Huang-Rhys) vibrionic fit, which was validated over the single-mode version by BIC in every case (delta-BIC -62 to -89 across a/b/d/f). The primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1).
 
 Chl b's Q_y fit is an outlier (761 cm^-1 primary mode vs the a/d/f cluster) - traced to Q_x and the Q_y vibronic satellite overlapping
-for this compound specifically (visible pre-fit in the raw band shape: no distinct third peak, unlike a/d/f's three-feature pattern).
+for this compound (visible pre-fit in the raw band shape: no distinct third peak, unlike a/d/f's three-feature pattern).
 
 ### Q_x - validated for a/d/f, honestly unresolved for Chl b
-Takeaway was that a bare Gaussian fails badly even for a visually "isolated" Q_x band (Chl a alone: R^2=0.33) because Q_x is in a minimum 
-between B-band's red tail and Q_y-manifold's blue tail: not negligible there even when the raw plot looks flat. A baseline term
+Takeaway was that a bare Gaussian fails badly even for a visually "isolated" Q_x band (Chl a alone: R^2=0.33) because Q_x is in a minimum between B-band's red tail and Q_y-manifold's blue tail: not negligible there even when the raw plot looks flat. A baseline term
 (Gaussian + linear background) fixes this - but the window also needs to stay clear of the Q_y satellite's own tail (found by residual
 inspection).
 
