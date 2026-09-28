@@ -39,15 +39,13 @@ See `scripts/phase1_reference_data/verify_reference_structures.py`.
 ## Phase 2: spectral deconvolution
 
 ### Q_y - solid for all four compounds
-Two-mode Franck-Condon (Huang-Rhys) vibrionic fit, which was validated over the single-mode version by BIC in every case (delta-BIC -62 to -89 across a/b/d/f). The primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1).
+Two-mode Franck-Condon (Huang-Rhys) vibronic fit, which was validated over the single-mode version by BIC in every case (delta-BIC -62 to -89 across a/b/d/f). The primary vibronic mode clusters tightly for a/d/f (1111-1156 cm^-1).
 
 Chl b's Q_y fit is an outlier (761 cm^-1 primary mode vs the a/d/f cluster) - traced to Q_x and the Q_y vibronic satellite overlapping
 for this compound (visible pre-fit in the raw band shape: no distinct third peak, unlike a/d/f's three-feature pattern).
 
-### Q_x - validated for a/d/f, honestly unresolved for Chl b
-Takeaway was that a bare Gaussian fails badly even for a visually "isolated" Q_x band (Chl a alone: R^2=0.33) because Q_x is in a minimum between B-band's red tail and Q_y-manifold's blue tail: not negligible there even when the raw plot looks flat. A baseline term
-(Gaussian + linear background) fixes this - but the window also needs to stay clear of the Q_y satellite's own tail (found by residual
-inspection).
+### Q_x - validated for a/d/f but not b
+Takeaway was that a bare Gaussian fails even for a visually isolated Q_x band (Chl a alone: R^2=0.33) because Q_x is in a minimum between the B-band's red tail and the Q_y-manifold's blue tail. A baseline term (Gaussian + linear background) can fix this but the window needs to also stay clear of the Q_y satellite's own tail (found by residual inspection).
 
 Validated results (Gaussian + linear baseline):
 | Compound | Position | Width (cm^-1) | R^2 |
@@ -56,32 +54,20 @@ Validated results (Gaussian + linear baseline):
 | Chl d | 592.3 nm | 234.2 +/- 11.0 | 0.984 |
 | Chl f | 600.3 nm | 280.7 +/- 26.0 | 0.984 |
 
-Chl b: multiple joint Q_x+Q_y-satellite fits attempted (unconstrained,
-then with vibronic modes fixed from the a/d/f consensus) - both revealed
-severe parameter degeneracy (S1 collapsing to ~0, correlations up to
--0.95) rather than resolving it. Conclusion: Chl b's 594.7 nm feature is
-a genuine, inseparable Q_x + Q_y-satellite BLEND (position 594.73 nm,
-width 149.3 +/- 5.2 cm^-1 as a single effective quantity) - not a clean
-Q_x value comparable to a/d/f. Treated as flagged/provisional, same
-spirit as pheophytin a being set aside.
+With Chl b multiple joint Q_x+Q_y-satellite fits were attempted (unconstrained, then with vibronic modes fixed from the a/d/f consensus); both revealed severe parameter degeneracy (S1 collapsing to ~0, correlations up to -0.95) rather than resolving it. Takeaway was that Chl b's 594.7 nm feature is probably a Q_x + Q_y-satellite blend (position 594.73 nm, width 149.3 +/- 5.2 cm^-1 as a single effective quantity) and not a clean Q_x value comparable to a/d/f. 
+
+Unlike earlier when phe a was ignored, this needs to be addressed. If anyone reading this has an idea please feel free to email me. 
 
 ### B-band - component count confirmed, decomposition underdetermined
-Second-derivative analysis resolves 3 components for Chl a (431, 405,
-373 nm) with UNEQUAL spacing (1515, 2083 cm^-1) - rules out a single
-vibronic progression. A proper 3-Gaussian+baseline fit confirms 3
-components decisively beat 2 (delta-BIC=-126.8). BUT widening the width
-bounds to stop them pegging reveals severe correlations (~10 parameter
-pairs above 0.85) - the component COUNT is real, but individual
-position/width/amplitude VALUES are not independently determined by a
+Second-derivative analysis resolves 3 components for Chl a (431, 405, 373 nm) with unequal spacing (1515, 2083 cm^-1), ruling out a single vibronic progression. A proper 3-Gaussian+baseline fit confirms 3 components decisively beat 2 (delta-BIC=-126.8) but widening the width bounds to stop them pegging reveals severe correlations (~10 parameter
+pairs above 0.85), suggesting the component count is real, but individual
+position/width/amplitude values are not independently determined by a
 single linear absorption spectrum.
 
-Practical resolution: use model-free aggregate quantities (intensity-
-weighted centroid, integrated intensity) for the B-band, not the
-individual sub-component fits. The B_x/B_y electronic split is deferred
-to a computed orbital picture (see Phase 3).
+The practical patch-fix was to use model-free aggregate quantities (intensity-weighted centroid, integrated intensity) for the B-band, and not the individual sub-component fits. The B_x/B_y electronic split is deferred to a computed orbital picture (see Phase 3).
 
 Aggregate B-band values (crude linear-baseline-between-window-edges
-method - ballpark, not precision):
+method):
 | Compound | Centroid | Integrated intensity | Peak abs |
 |---|---|---|---|
 | Chl a | 408.5 nm | 1982 | 1.000 |
@@ -91,17 +77,11 @@ method - ballpark, not precision):
 
 ## Phase 3: Gouterman inversion - first real run
 
-The full per-polarization inversion (getting A_x, B_x, W_x separately
-from A_y, B_y, W_y) needs E(B_x) and E(B_y) as two distinct numbers.
-Phase 2 could only deliver an aggregate B value - so this is currently
-BLOCKED. This is a genuine project-structure finding: Phase 3's full
-completion depends on some output from Phase 4 (a computed orbital
-picture that can split B into x/y), which wasn't visible in the original
-toy-case design.
+The full per-polarization inversion (getting A_x, B_x, W_x separately from A_y, B_y, W_y) needs E(B_x) and E(B_y) as two distinct numbers.Phase 2 could only deliver an aggregate B value so this is currently blocked. Hence, Phase 3's full completion depends on some output from Phase 4 (a computed orbital picture that can split B into x/y), which wasn't visible in the original toy-case design.
 
 Partial progress made using only the reliable half of the data (Q_x,
-Q_y - no intensities, no B-split needed): the redundancy relation
-B_x - B_y = Q_y - Q_x gives a direct, falsifiable PREDICTION.
+Q_y - no intensities, no B-split needed), with the redundancy relation
+B_x - B_y = Q_y - Q_x giving a direct, falsifiable prediction.
 
 Results (Monte Carlo uncertainty propagation from real Phase 2 fit
 uncertainties):
@@ -109,21 +89,17 @@ uncertainties):
 - Chl d: predicted |B_x - B_y| = 2305.5 +/- 8.5 cm^-1
 - Chl f: predicted |B_x - B_y| = 2267.0 +/- 16.5 cm^-1
 
-Striking: consistent within 3% across three chemically different
-compounds, from fully independent fits - real evidence the four-orbital
-model is capturing genuine physics, not curve-fitting noise.
+Interestingly consistent within 3% across three chemically different compounds, from fully independent fits suggesting that the four-orbital model really is capturing physical information and not overfitting noise.
 
-Cross-check against Chl a's ambiguous B-band sub-components: predicted
-2240.7 cm^-1 vs the empirical E3-E2 gap of 2102.7 cm^-1 (6.2% off) -
-encouraging given how uncertain those individual B-band positions are.
+Cross-checking against Chl a's ambiguous B-band sub-components: predicted
+2240.7 cm^-1 vs the empirical E3-E2 gap of 2102.7 cm^-1 (6.2% off), which was encouraging given the uncertainty of the B-band positions.
 
-### Current test in progress
-A single targeted ORCA ground-state DFT calculation (B3LYP/def2-SVP,
-RIJCOSX+D3BJ) on Chl a (phytyl truncated to methyl ester - spectroscopically
-silent per project scope, 29% fewer heavy atoms) to check whether computed
+### Current test in progress 
+A single targeted ORCA ground-state DFT calculation (B3LYP/def2-SVP, RIJCOSX+D3BJ) on truncated chl a (phytyl truncated to methyl ester) to check whether computed
 HOMO-1/HOMO/LUMO/LUMO+1 splittings predict a Bx-By gap consistent with
-~2240 cm^-1. See `orca_inputs/phase3_test/` and
-`scripts/phase3_inversion/parse_orca_frontier_orbitals.py`.
+~2240 cm^-1. 
+
+See `orca_inputs/phase3_test/` and `scripts/phase3_inversion/parse_orca_frontier_orbitals.py`.
 
 ## Environment notes (NEMO-specific, useful if resuming there)
 - Physics/cheminformatics work: clone of `qchem` conda env (RDKit, xtb) +
