@@ -1,1 +1,1 @@
-Read me is w/in 
+Real read me is inside GNN_spectrpredict.
