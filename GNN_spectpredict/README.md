@@ -1,6 +1,6 @@
 # Chlorin Structure Elucidation from UV/Vis Spectra
 
-Attempt at a physics-informed pipeline for predicting structural modifications to
+My attempt at making a physics-informed pipeline for predicting structural modifications to
 chlorin macrocycles from its UV/Vis absorption spectra (assuming user-provided UV/Vis spectra
 of known chlorin compound - for e.g., chl a - measured with same instrument) built around analytically 
 inverting Gouterman's four-orbital model.
