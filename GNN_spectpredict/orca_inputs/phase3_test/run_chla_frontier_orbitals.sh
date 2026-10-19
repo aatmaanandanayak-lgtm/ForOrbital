@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=chla_frontier_orb
-#SBATCH --account=u_costaa
+#SBATCH --account=u_awr
 #SBATCH --partition=ncpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=16
@@ -16,7 +16,7 @@ conda deactivate 2>/dev/null || true
 module load ORCA/5.0.4-gompi-2022a
 ORCA_EXE=$(which orca)
 
-cd ~/working/Aatmaananda/others/GNN_spectpredict/orca_inputs/phase3_test
+cd ~/home/GNN_spectpredict/orca_inputs/phase3_test
 $ORCA_EXE chla_frontier_orbitals.inp > chla_frontier_orbitals.out 2>&1
 
 echo "Chl a frontier orbital calculation finished."
