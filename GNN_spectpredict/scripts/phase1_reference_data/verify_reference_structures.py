@@ -1,12 +1,3 @@
-"""
-verify the five chlorin-family reference structures (Phase 1).
-
-Parses each compound's SMILES/InChI with RDKit and checks the computed
-molecular formula and formal charge against literature values, BEFORE
-trusting any structure downstream. Two real errors were caught this way
-during Phase 1 - see notes below - which is why this check exists as a
-standalone, re-runnable script rather than a one-off.
-"""
 from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors
 
