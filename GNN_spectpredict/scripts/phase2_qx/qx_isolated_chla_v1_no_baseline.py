@@ -20,4 +20,4 @@ params = model.make_params(Ex=1e7/577, sigma_x=dict(value=300, min=50, max=800),
 result = model.fit(sub["abs"].values, params, wn=sub["wn"].values)
 print(result.fit_report())
 print(f"\nChl a Q_x width (sigma_x): {result.params['sigma_x'].value:.1f} +/- {result.params['sigma_x'].stderr:.1f} cm^-1")
-print(f"(bound was 50-800: {'AT BOUND - even this isolated fit is not clean' if result.params['sigma_x'].value>=790 else 'interior, well-determined'})")
+print(f"(bound was 50-800: {'at bound - even this isolated fit is not clean' if result.params['sigma_x'].value>=790 else 'interior, well-determined'})")
