@@ -11,8 +11,7 @@ df = pd.read_csv("Natural Chlorophylls/CHL015_Chl b, Et2O (Kobayashi, 2013).abs.
 df.columns = ["wl_nm", "abs"]
 df = df.sort_values("wl_nm").reset_index(drop=True)
 
-# Wide window: from well below Qx through the full Qy band, so the fit
-# can properly apportion intensity rather than have Qx truncated out
+# Wide window: from well below Qx through the full Qy band, so the fit can properly apportion intensity rather than have Qx truncated out
 mask = (df.wl_nm >= 560) & (df.wl_nm <= 670)
 sub = df[mask].copy()
 sub["wn"] = 1e7/sub.wl_nm
@@ -21,10 +20,6 @@ sub = sub.sort_values("wn").reset_index(drop=True)
 def joint_qx_qy2mode(wn, Ex, sigma_x, Ax,
                       E00, hw1, S1, hw2, S2, sigma_y, Ay,
                       n1max=3, n2max=2):
-    """Q_x as a single Gaussian (start simple - add vibronic structure
-    only if residuals demand it) + Q_y as the same two-mode Franck-Condon
-    progression validated on a/d/f, fit SIMULTANEOUSLY so Qx and the
-    Qy satellite aren't forced into an artificial window boundary."""
     qx = Ax * np.exp(-0.5*((wn-Ex)/sigma_x)**2)
     qy = np.zeros_like(wn)
     for n1 in range(n1max):
