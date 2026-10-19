@@ -1,13 +1,3 @@
-"""
-Phase 2: resolve overlapping/shoulder features in the B-band region using
-second-derivative analysis - much more sensitive than raw peak-finding
-for unresolved components. See README "Phase 2 progress" notes: for
-Chl a this revealed 3 components with UNEQUAL spacing, ruling out a
-simple single-mode vibronic progression and leaving the Bx/By electronic
-assignment genuinely open pending Phase 4's computed orbital picture.
-
-Edit SPECTRUM_FILE / COMPOUND_LABEL / WL_RANGE below for other compounds.
-"""
 import pandas as pd
 import numpy as np
 import matplotlib
