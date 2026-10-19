@@ -27,10 +27,8 @@ def joint_qx_qy2mode(wn, Ex, sigma_x, Ax,
             qy += Ay * w1 * w2 * np.exp(-0.5*((wn-(E00+n1*hw1+n2*hw2))/sigma_y)**2)
     return qx + qy
 
-# hw1/hw2 FIXED at the a/d/f average - well-determined, mutually consistent,
-# physically the same macrocycle mode. Chl b's fit only resolves amplitudes,
-# positions, and widths - not asked to redetermine mode frequencies from
-# data where Qx and the satellite are entangled.
+# hw1/hw2 FIXED at the a/d/f average - well-determined, mutually consistent, physically the same macrocycle mode. 
+# Chl b's fit only resolves amplitudes, positions, and widths - not trying to redetermine mode frequencies from data where Qx and the satellite are entangled.
 HW1_FIXED = (1146 + 1111 + 1156) / 3   # 1137.7 cm^-1
 HW2_FIXED = (558 + 512 + 636) / 3       # 568.7 cm^-1
 
