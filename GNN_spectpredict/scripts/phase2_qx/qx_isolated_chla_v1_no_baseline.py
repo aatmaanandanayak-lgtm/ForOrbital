@@ -7,9 +7,6 @@ df = pd.read_csv("Natural Chlorophylls/CHL007_Chl a, Et2O (Kobayashi, 2013).abs.
 df.columns = ["wl_nm", "abs"]
 df = df.sort_values("wl_nm").reset_index(drop=True)
 
-# Chl a's Q_x sits cleanly isolated ~577nm, well clear of the 615nm
-# satellite and the B-band tail - fit it alone to get an independently
-# determined width, to use as a template for Chl b's entangled case.
 mask = (df.wl_nm >= 555) & (df.wl_nm <= 600)
 sub = df[mask].copy()
 sub["wn"] = 1e7/sub.wl_nm
